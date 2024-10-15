@@ -329,3 +329,117 @@ options(
 scale_color_discrete = scale_color_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
+
+## Data args in ‘geom’
+
+basically below we creat two data sets, then apply two geometries. in
+the second example, we apply each geometry to a different dataset
+
+``` r
+central_park =
+  weather_df %>%
+  filter(name == "CentralPark_NY")
+
+molokai =
+  weather_df %>%
+  filter(name == "Molokai_HI")
+
+ggplot(data = molokai, aes(x=date, y=tmax, color=name))+
+  geom_point()+
+  geom_line()
+```
+
+    ## Warning: Removed 1 row containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](visualization_2_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+``` r
+ggplot(data = molokai, aes(x=date, y=tmax, color=name))+
+  geom_point()+
+  geom_line(data = central_park)
+```
+
+    ## Warning: Removed 1 row containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](visualization_2_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+## Patchwork
+
+remeber faceting? it lets you put the same plot types side by side
+
+``` r
+weather_df %>%
+  ggplot(aes(x=tmin, fill=name))+
+  geom_density(alpha=.5)+
+  facet_grid(.~name)
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_density()`).
+
+![](visualization_2_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+what happens when yuou want multipanel plots but can’t facet …..?
+
+``` r
+tmin_tmax_p=
+  weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color=name))+
+  geom_point(alpha=.5)+
+  theme(legend.position = "none")
+
+prcp_dens_p =
+  weather_df %>%
+  filter(prcp > 0) %>%
+  ggplot(aes(x=prcp, fill=name))+
+  geom_density(alpha=.5)
+
+tmax_date_p =
+  weather_df %>%
+  ggplot(aes(x=date, y=tmax, color=name))+
+  geom_point()+
+  geom_smooth(se=FALSE)+
+  theme(legend.positon = "none")
+
+tmin_tmax_p + prcp_dens_p + tmax_date_p
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning in plot_theme(plot): The `legend.positon` theme element is not defined
+    ## in the element hierarchy.
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](visualization_2_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+can also adjust how they show up in the panels in various ways
+
+``` r
+tmin_tmax_p /( prcp_dens_p + tmax_date_p)
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning in plot_theme(plot): The `legend.positon` theme element is not defined
+    ## in the element hierarchy.
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](visualization_2_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
