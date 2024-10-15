@@ -14,3 +14,101 @@ weather_df = read_csv(file = "./data/weather_df.csv")
   
 weather_df
 ```
+
+## Remember this plot ...?
+
+```{r}
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)
+```
+
+## Labels
+
+```{r}
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )
+```
+
+## Scales
+
+start with the same plot
+
+```{r}
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+  scale_x_continuous(
+    breaks = c(-15, 0, 15),
+    labels = c("-15 C", "0", "15")
+  )+
+  scale_y_continuous(
+    trans = "sqrt",
+    position = "right"
+  )
+
+```
+
+Look at color scales
+
+first example
+```{r}
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ scale_color_hue(h=c(100,300))
+
+```
+
+changing the title of key using name argument
+```{r}
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ scale_color_hue(
+   name = "location",
+   h=c(100,300))
+
+```
+
+professor's preferred method
+```{r}
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ viridis::scale_color_viridis(
+   name = "location",
+   discrete=TRUE)
+
+```
