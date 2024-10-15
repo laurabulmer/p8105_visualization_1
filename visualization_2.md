@@ -184,3 +184,148 @@ weather_df %>%
     ## (`geom_point()`).
 
 ![](visualization_2_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+## Themes
+
+shift the legend
+
+``` r
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ viridis::scale_color_viridis(
+   name = "location",
+   discrete=TRUE)+
+  theme(legend.position = "bottom")
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](visualization_2_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+change the overall theme
+
+``` r
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ viridis::scale_color_viridis(
+   name = "location",
+   discrete=TRUE)+
+  theme_bw()
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](visualization_2_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+``` r
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ viridis::scale_color_viridis(
+   name = "location",
+   discrete=TRUE)+
+  theme_minimal()
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](visualization_2_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+other ones are theme_classic() that has no gridlines, a bunch in
+ggthemes package (theme_economist, theme_excel, etc.)
+
+``` r
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ viridis::scale_color_viridis(
+   name = "location",
+   discrete=TRUE)+
+ ggthemes::theme_excel()
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](visualization_2_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+professor likes theme_minimal best
+
+applying theme after other things will override those original things.
+so you need to tweak the overall theme. for example with moving the
+legend
+
+``` r
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ viridis::scale_color_viridis(
+   name = "location",
+   discrete=TRUE)+
+theme(legend.position = "bottom")
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](visualization_2_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+## Setting options
+
+this is something/options he would normally put at the very beginning of
+a document
+
+``` r
+library(tidyverse)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal()+theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_color_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```

@@ -112,3 +112,125 @@ weather_df %>%
    discrete=TRUE)
 
 ```
+
+## Themes
+
+shift the legend 
+
+```{r}
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ viridis::scale_color_viridis(
+   name = "location",
+   discrete=TRUE)+
+  theme(legend.position = "bottom")
+  
+
+```
+
+change the overall theme
+
+```{r}
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ viridis::scale_color_viridis(
+   name = "location",
+   discrete=TRUE)+
+  theme_bw()
+  
+```
+
+```{r}
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ viridis::scale_color_viridis(
+   name = "location",
+   discrete=TRUE)+
+  theme_minimal()
+  
+```
+
+other ones are theme_classic() that has no gridlines, a bunch in ggthemes package (theme_economist, theme_excel, etc.)
+
+```{r}
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ viridis::scale_color_viridis(
+   name = "location",
+   discrete=TRUE)+
+ ggthemes::theme_excel()
+  
+```
+
+professor likes theme_minimal best
+
+applying theme after other things will override those original things. so you need to tweak the overall theme. for example with moving the legend
+
+```{r}
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color = name))+
+  geom_point(alpha=.5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Min daily temp (C)",
+    y = "Max daily temp (C)",
+    caption = "Data from rnoaa package; temperatures in 2021"
+  )+
+ viridis::scale_color_viridis(
+   name = "location",
+   discrete=TRUE)+
+theme(legend.position = "bottom")
+  
+```
+
+## Setting options
+
+this is something/options he would normally put at the very beginning of a document
+```{r, eval=FALSE}
+library(tidyverse)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal()+theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_color_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
