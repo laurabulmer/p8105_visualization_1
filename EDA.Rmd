@@ -145,6 +145,8 @@ weather_df%>%
 
 reminder: sometimes your results are easier to read in another format
 
+the knitr code below makes the output neater
+
 ```{r}
 weather_df %>%
   group_by(name, month)%>%
@@ -155,4 +157,70 @@ weather_df %>%
   )%>%
 knitr::kable(digits=1)
 ```
+
+## group_by and mutate
+
+this let me take the mean by group
+
+```{r}
+weather_df%>%
+  group_by(name) %>%
+  mutate(
+    mean_tmax = mean(tmax, no.rm=TRUE),
+    centered_tmax = tmax - mean_tmax
+  )%>%
+  ggplot(aes(x=date, y=centered_tmax+tmax, color=name))+
+  geom_point()
+```
+
+what about window functions?
+
+we used this code to group by name then month, then rank within each month the days according to tmax, then filtered by coldest day
+
+```{r}
+weather_df%>%
+  group_by(name,month)%>%
+  mutate(temp_rank = min_rank(tmax))%>%
+  filter(temp_rank == 1)
+
+```
+
+using below to flip the order of the ranking
+```{r}
+weather_df%>%
+  group_by(name,month)%>%
+  mutate(temp_rank = min_rank(desc(tmax)))
+```
+
+lag
+
+copies the observation and shifts down by one
+```{r}
+weather_df%>%
+  group_by(name)%>%
+  mutate(lag_temp = lag(tmax))
+```
+
+```{r}
+weather_df%>%
+  group_by(name)%>%
+  mutate(lag_temp = lag(tmax,5))
+```
+
+lags are helpful when you're trying to predict things like how much was today different from yesterday's temp?
+
+in this instance i pulled the temp change from one day to the next, then summarized to get the max temp change for each location
+```{r}
+weather_df%>%
+  group_by(name)%>%
+  mutate(temp_change = tmax - lag(tmax))%>%
+  summarize(
+    temp_change_max = max(temp_change, na.rm = TRUE),
+    temp_change_sd = sd(temp_change, na.rm=TRUE)
+  )
+```
+
+
+
+
 
