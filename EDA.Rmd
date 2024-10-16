@@ -2,7 +2,7 @@
 title: "EDA"
 output: github_document
 ---
-```{r, include=FALSE}
+```{r}
 library(tidyverse)
 
 knitr::opts_chunk$set(
@@ -11,14 +11,14 @@ knitr::opts_chunk$set(
   out.width = "90%"
 )
 
-theme_set(theme_minimal()+theme(legend.position = "bottom"))
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
 
 options(
   ggplot2.continuous.colour = "viridis",
   ggplot2.continuous.fill = "viridis"
 )
 
-scale_color_discrete = scale_color_viridis_d
+scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
@@ -75,11 +75,84 @@ weather_df%>%
   )
 ```
 
+## a digression on 2x2 tables
+
+```{r}
+weather_df %>%
+  filter(name != "Molokai_HI") %>%
+  mutate(
+    cold=case_when(
+     tmax <  5 ~ "cold",
+      tmax >= 5 ~ "not_cold",
+      TRUE      ~ ""
+    )
+  )%>%
+  group_by(name, cold) %>%
+  summarize(count = n())
+```
 
 
+```{r}
+weather_df %>%
+  filter(name != "Molokai_HI") %>%
+  mutate(
+    cold=case_when(
+      tmax <  5 ~ "cold",
+      tmax >= 5 ~ "not_cold",
+      TRUE      ~ ""
+    )
+  )%>%
+  janitor::tabyl(name, cold)
+```
 
+## general summaries
 
+the na.rm helps us drop blank ones 
 
+you can do lots of summaries. 
 
+```{r}
+weather_df %>%
+  group_by(name, month)%>%
+  summarize(
+    mean_tmax = mean(tmax, na.rm=TRUE),
+    mean_prcp = mean(prcp, na.rm = TRUE),
+    median_tmin = median(tmin, no.rm=TRUE)
+  )
+        
+```
 
+this is a dataframe!
+```{r}
+weather_df %>%
+  group_by(name, month)%>%
+  summarize(
+    mean_tmax = mean(tmax, na.rm=TRUE),
+    mean_prcp = mean(prcp, na.rm = TRUE),
+    median_tmin = median(tmin, no.rm=TRUE)
+  ) %>%
+  ggplot(aes(x=month, y=mean_tmax, color=name)) +
+           geom_point()+
+            geom_line()
+```
+
+suppose you want to summarize many columns
+```{r}
+weather_df%>%
+  group_by(name, month)%>%
+  summarize(across(prcp:tmin, mean))
+```
+
+reminder: sometimes your results are easier to read in another format
+
+```{r}
+weather_df %>%
+  group_by(name, month)%>%
+  summarize(mean_tmax = mean(tmax)) %>%
+  pivot_wider(
+    names_from=name,
+    values_from=mean_tmax
+  )%>%
+knitr::kable(digits=1)
+```
 
